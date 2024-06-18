@@ -1,3 +1,16 @@
 # TonTeeTon Go Library
 
-A collection of Go packages designed for TonTeeTon enclave operations, encryption, configuration, and key management.
+<p align="left">
+    <a href="https://github.com/tonteeton/golib">
+        <img src="https://avatars.githubusercontent.com/u/168369799" width="78">
+    </a>
+</p>
+
+[![Go Reference](https://pkg.go.dev/badge/github.com/tonteeton/golib.svg)](https://pkg.go.dev/github.com/tonteeton/golib)
+
+A collection of Go packages designed for [TonTeeTon](https://github.com/tonteeton/tonteeton) enclave operations, encryption, configuration, and key management.
+
+
+## EGo framework
+
+The packages rely on the [EGo](https://github.com/edgelesssys/ego) framework for building confidential applications in Go.
