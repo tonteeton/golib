@@ -2,8 +2,8 @@ package ebox
 
 import (
 	"bytes"
-	"enclave/econf"
 	"errors"
+	"github.com/tonteeton/golib/econf"
 	"io"
 	"os"
 	"testing"

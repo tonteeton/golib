@@ -2,10 +2,10 @@ package ereport
 
 import (
 	"bytes"
-	"enclave/eattest"
-	"enclave/ebox"
-	"enclave/econf"
 	"github.com/edgelesssys/ego/attestation"
+	"github.com/tonteeton/golib/eattest"
+	"github.com/tonteeton/golib/ebox"
+	"github.com/tonteeton/golib/econf"
 	"os"
 	"testing"
 )

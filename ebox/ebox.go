@@ -4,10 +4,10 @@ package ebox
 
 import (
 	"crypto/rand"
-	"enclave/econf"
-	"enclave/ekeys"
 	"errors"
 	"fmt"
+	"github.com/tonteeton/golib/econf"
+	"github.com/tonteeton/golib/ekeys"
 	"golang.org/x/crypto/nacl/box"
 	"io"
 )

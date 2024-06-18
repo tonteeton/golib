@@ -3,8 +3,8 @@ package ekeys
 import (
 	"bytes"
 	"crypto/rand"
-	"enclave/econf"
 	"github.com/edgelesssys/ego/ecrypto"
+	"github.com/tonteeton/golib/econf"
 	"io/ioutil"
 	"os"
 	"strings"

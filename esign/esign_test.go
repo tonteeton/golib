@@ -3,7 +3,7 @@ package esign
 import (
 	"bytes"
 	"crypto/ed25519"
-	"enclave/econf"
+	"github.com/tonteeton/golib/econf"
 	"os"
 	"testing"
 )

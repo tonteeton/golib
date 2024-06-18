@@ -1,7 +1,0 @@
-Dockerfile
-mount/
-contracts/
-public.pem
-private.pem
-cacert.pem
-cacert.pem.sha256

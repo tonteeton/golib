@@ -4,9 +4,9 @@ package esign
 
 import (
 	"crypto/ed25519"
-	"enclave/econf"
-	"enclave/ekeys"
 	"fmt"
+	"github.com/tonteeton/golib/econf"
+	"github.com/tonteeton/golib/ekeys"
 )
 
 // SignatureKey provides methods to access Ed25519 signature keys.

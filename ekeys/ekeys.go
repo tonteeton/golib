@@ -2,10 +2,10 @@
 package ekeys
 
 import (
-	"enclave/econf"
 	"encoding/base64"
 	"errors"
 	"github.com/edgelesssys/ego/ecrypto"
+	"github.com/tonteeton/golib/econf"
 	"os"
 	"time"
 )

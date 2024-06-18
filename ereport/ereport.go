@@ -3,11 +3,11 @@
 package ereport
 
 import (
-	"enclave/eattest"
-	"enclave/ebox"
-	"enclave/econf"
-	"enclave/esign"
 	"errors"
+	"github.com/tonteeton/golib/eattest"
+	"github.com/tonteeton/golib/ebox"
+	"github.com/tonteeton/golib/econf"
+	"github.com/tonteeton/golib/esign"
 	"google.golang.org/protobuf/proto"
 	"os"
 )
