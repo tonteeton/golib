@@ -1,16 +1,19 @@
-// Package econf provides functionality to load configuration from environment variables.
+// Package econf provides configuration management for enclaved applications.
+// It defines and initializes various configuration sections, ensuring the necessary
+// 'mount' directory exists for storing application data, reports, and outputs.
+
 package econf
 
 import (
 	"os"
 )
 
-const (
-	// TON_TICKER represents the ticker ID known to the contract.
-	TON_TICKER  = uint64(0x72716023)
-	APP_VERSION = "get-simple-price-v1r1"
-)
+// ResponseConfig represents the configuration for the application response file path.
+type ResponseConfig struct {
+	ResponsePath string
+}
 
+// KeysConfig represents configuration for managing keys.
 type KeysConfig struct {
 	PublicKeyPath  string
 	PrivateKeyPath string
@@ -18,6 +21,7 @@ type KeysConfig struct {
 	Version        string
 }
 
+// ReportsConfig represents configuration for signed reports.
 type ReportsConfig struct {
 	PublicKeysPath       string
 	SignatureRequestPath string
@@ -25,25 +29,21 @@ type ReportsConfig struct {
 	SignatureExportPath  string
 }
 
+// Config aggregates all configuration sections.
 type Config struct {
-	CoinGecko struct {
-		DemoKey string
-		ProKey  string
-	}
-	Tickers struct {
-		TON uint64
-	}
+	Response       ResponseConfig
 	Reports        ReportsConfig
 	SignatureKeys  KeysConfig
 	EncryptionKeys KeysConfig
 }
 
-// LoadConfig loads configuration from environment variables.
-func LoadConfig() (*Config, error) {
+// LoadConfig initializes a Config struct.
+// It also ensures the necessary 'mount' directory exists.
+func LoadConfig(appVersion string) (*Config, error) {
 	cfg := Config{}
-	cfg.Tickers.TON = TON_TICKER
-	cfg.CoinGecko.DemoKey = os.Getenv("COINGECKO_API_KEY")
-	cfg.CoinGecko.ProKey = os.Getenv("COINGECKO_PRO_API_KEY")
+	cfg.Response = ResponseConfig{
+		ResponsePath: "mount/response.json",
+	}
 	cfg.Reports = ReportsConfig{
 		PublicKeysPath:       "mount/report_keys.pub",
 		SignatureRequestPath: "mount/report_signature_request.pub",
@@ -54,13 +54,19 @@ func LoadConfig() (*Config, error) {
 		PublicKeyPath:  "mount/signature_key.pub",
 		PrivateKeyPath: "mount/signature_key.priv.enc",
 		SealedDatePath: "mount/signature_created.enc",
-		Version:        APP_VERSION,
+		Version:        appVersion,
 	}
 	cfg.EncryptionKeys = KeysConfig{
 		PublicKeyPath:  "mount/box_key.pub",
 		PrivateKeyPath: "mount/box_key.priv.enc",
 		SealedDatePath: "mount/box_created.enc",
-		Version:        APP_VERSION,
+		Version:        appVersion,
 	}
+
+	// Ensure the 'mount' directory exists
+	if err := os.MkdirAll("mount", 0700); err != nil {
+		return nil, err
+	}
+
 	return &cfg, nil
 }

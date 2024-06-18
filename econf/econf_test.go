@@ -1,20 +1,22 @@
 package econf
 
 import (
+	"os"
 	"testing"
 )
 
 func TestLoadConfig(t *testing.T) {
+	os.Chdir(t.TempDir())
 	t.Run("LoadConfig", func(t *testing.T) {
-		t.Setenv("COINGECKO_API_KEY", "demo")
-		t.Setenv("COINGECKO_PRO_API_KEY", "pro")
-		cfg, err := LoadConfig()
+		cfg, err := LoadConfig("econf-test")
 		if err != nil {
-			t.Errorf("Unexpected error: %v", err)
-		} else if cfg.Tickers.TON == 0 || cfg.CoinGecko.DemoKey != "demo" || cfg.CoinGecko.ProKey != "pro" {
-			t.Errorf("Unexpected config: %+v", cfg)
-		} else if cfg.SignatureKeys.PublicKeyPath == "" {
-			t.Errorf("Unexpected keys config: %+v", cfg.SignatureKeys)
+			t.Fatalf("Unexpected error: %v", err)
+		}
+		if cfg.SignatureKeys.PublicKeyPath == "" {
+			t.Fatalf("Unexpected keys config: %+v", cfg.SignatureKeys)
+		}
+		if cfg.SignatureKeys.Version != "econf-test" {
+			t.Fatalf("Unexpected version: %+v", cfg.SignatureKeys.Version)
 		}
 	})
 }

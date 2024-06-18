@@ -6,9 +6,6 @@ all: format test audit
 test:
 	 ego-go test -v ./... -coverprofile=coverage.out
 
-.PHONY: test
-test-integration:
-	 ego-go test -v ./... -coverprofile=coverage.out --tags=integration
 
 .PHONY: format
 format:
