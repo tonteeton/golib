@@ -1,7 +1,6 @@
 // Package econf provides configuration management for enclaved applications.
 // It defines and initializes various configuration sections, ensuring the necessary
 // 'mount' directory exists for storing application data, reports, and outputs.
-
 package econf
 
 import (
