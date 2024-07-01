@@ -9,7 +9,7 @@ import (
 	"github.com/tonteeton/golib/econf"
 	"github.com/tonteeton/golib/esign"
 	"github.com/xssnick/tonutils-go/tvm/cell"
-	"io/ioutil"
+	"os"
 )
 
 // Config contains configuration parameters for generating an enclave response.
@@ -69,7 +69,7 @@ func (response EnclaveResponse) save(responsePath string) error {
 	if err != nil {
 		return err
 	}
-	err = ioutil.WriteFile(responsePath, data, 0600)
+	err = os.WriteFile(responsePath, data, 0600)
 	if err != nil {
 		return err
 	}

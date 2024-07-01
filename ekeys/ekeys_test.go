@@ -5,7 +5,6 @@ import (
 	"crypto/rand"
 	"github.com/edgelesssys/ego/ecrypto"
 	"github.com/tonteeton/golib/econf"
-	"io/ioutil"
 	"os"
 	"strings"
 	"testing"
@@ -14,15 +13,19 @@ import (
 func generateRandomKey() (publicKey []byte, privateKey []byte, err error) {
 	var expectedPub [32]byte
 	var expectedPriv [32]byte
-	rand.Read(expectedPub[:])
-	rand.Read(expectedPriv[:])
+	if _, err := rand.Read(expectedPub[:]); err != nil {
+		return nil, nil, err
+	}
+	if _, err := rand.Read(expectedPriv[:]); err != nil {
+		return nil, nil, err
+	}
 	return expectedPub[:], expectedPriv[:], nil
 }
 
 func setupTest(t *testing.T, config econf.KeysConfig) func() {
-
-	os.Chdir(t.TempDir())
-
+	if err := os.Chdir(t.TempDir()); err != nil {
+		t.Fatalf("Error: %v", err)
+	}
 	if _, err := os.Stat(config.PrivateKeyPath); err == nil {
 		err = os.Remove(config.PrivateKeyPath)
 		if err != nil {
@@ -51,7 +54,7 @@ func TestLoadConfig(t *testing.T) {
 			t.Fatalf("Error: %v", err)
 		}
 		var data []byte
-		data, err = ioutil.ReadFile("test.enc")
+		data, err = os.ReadFile("test.enc")
 		if err != nil {
 			t.Fatalf("Error: %v", err)
 		}
@@ -77,7 +80,7 @@ func TestLoadConfig(t *testing.T) {
 			t.Fatalf("Error: %v", err)
 		}
 		var data []byte
-		data, err = ioutil.ReadFile("test.enc")
+		data, err = os.ReadFile("test.enc")
 		if err != nil {
 			t.Fatalf("Error: %v", err)
 		}
@@ -156,7 +159,9 @@ func TestLoadConfig(t *testing.T) {
 			t.Fatalf("Error: %v", err)
 		}
 
-		os.WriteFile(config.PrivateKeyPath, []byte("modified"), 0644)
+		if err := os.WriteFile(config.PrivateKeyPath, []byte("modified"), 0644); err != nil {
+			t.Fatalf("Error writing file: %v", err)
+		}
 
 		_, err = keys.GetPrivateKey(generateRandomKey)
 		if err == nil || !strings.Contains(err.Error(), "private key") {

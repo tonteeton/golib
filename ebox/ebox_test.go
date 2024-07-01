@@ -10,8 +10,9 @@ import (
 )
 
 func setupTest(t *testing.T, config econf.KeysConfig) func() {
-
-	os.Chdir(t.TempDir())
+	if err := os.Chdir(t.TempDir()); err != nil {
+		t.Fatalf("Error: %v", err)
+	}
 
 	OriginalGenerateKey := GenerateKey
 
@@ -155,7 +156,10 @@ func TestBoxKey(t *testing.T) {
 			t.Fatalf("Error: %v", err)
 		}
 
-		err = os.Remove(config.PrivateKeyPath)
+		if err = os.Remove(config.PrivateKeyPath); err != nil {
+			t.Fatalf("Error: %v", err)
+		}
+
 		recipient, err := GetBoxKey(config)
 		if err != nil {
 			t.Fatalf("Error: %v", err)
@@ -177,7 +181,7 @@ func TestBoxKey(t *testing.T) {
 			t.Fatalf("Data was not decrypted")
 		}
 
-		decrypted, err = sender.Decrypt(encrypted, sender.GetPublicKey())
+		_, err = sender.Decrypt(encrypted, sender.GetPublicKey())
 		if err == nil {
 			t.Fatalf("Data can be decryped with a wrong key")
 		}

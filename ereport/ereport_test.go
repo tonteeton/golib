@@ -35,7 +35,9 @@ type MockedValues struct {
 }
 
 func setupTest(t *testing.T) MockedValues {
-	os.Chdir(t.TempDir())
+	if err := os.Chdir(t.TempDir()); err != nil {
+		t.Fatalf("Error: %v", err)
+	}
 
 	var mockedSignature [32]byte
 	for i := range mockedSignature {

@@ -5,13 +5,14 @@ import (
 	"encoding/json"
 	"github.com/tonteeton/golib/econf"
 	"github.com/xssnick/tonutils-go/tvm/cell"
-	"io/ioutil"
 	"os"
 	"testing"
 )
 
 func setupTest(t *testing.T) func() {
-	os.Chdir(t.TempDir())
+	if err := os.Chdir(t.TempDir()); err != nil {
+		t.Fatalf("Error: %v", err)
+	}
 	return func() {}
 }
 
@@ -80,7 +81,7 @@ func TestEnclaveResponseSaveMethod(t *testing.T) {
 			t.Fatalf("Error saving EnclaveResponse to JSON: %v", err)
 		}
 
-		data, _ := ioutil.ReadFile("response.json")
+		data, _ := os.ReadFile("response.json")
 		var savedResponse EnclaveResponse
 		err = json.Unmarshal(data, &savedResponse)
 		if err != nil {
@@ -94,7 +95,9 @@ func TestSaveResponse(t *testing.T) {
 	t.Run("SaveResponseNoError", func(t *testing.T) {
 		setupTest(t)
 		responseCfg := Config{
-			Response: econf.ResponseConfig{"response1.json"},
+			Response: econf.ResponseConfig{
+				ResponsePath: "response1.json",
+			},
 			SignatureKeys: econf.KeysConfig{
 				PublicKeyPath:  "key.pub",
 				PrivateKeyPath: "key.priv.enc",

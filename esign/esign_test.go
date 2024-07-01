@@ -9,8 +9,9 @@ import (
 )
 
 func setupTest(t *testing.T, config econf.KeysConfig) func() {
-
-	os.Chdir(t.TempDir())
+	if err := os.Chdir(t.TempDir()); err != nil {
+		t.Fatalf("Error: %v", err)
+	}
 
 	if _, err := os.Stat(config.PrivateKeyPath); err == nil {
 		err = os.Remove(config.PrivateKeyPath)

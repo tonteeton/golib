@@ -6,7 +6,10 @@ import (
 )
 
 func TestLoadConfig(t *testing.T) {
-	os.Chdir(t.TempDir())
+	if err := os.Chdir(t.TempDir()); err != nil {
+		t.Fatalf("Error: %v", err)
+	}
+
 	t.Run("LoadConfig", func(t *testing.T) {
 		cfg, err := LoadConfig("econf-test")
 		if err != nil {
