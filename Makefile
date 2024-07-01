@@ -17,6 +17,10 @@ audit:
 	ego-go mod verify
 	ego-go vet ./...
 
+.PHONY: lint
+lint:
+	docker run --rm -v $$(pwd):/app -w /app golangci/golangci-lint:v1.58.0 golangci-lint run -v
+
 .PHONY: proto
 proto: ereport/private_keys_report.pb.go
 

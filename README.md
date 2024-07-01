@@ -8,6 +8,7 @@
 
 [![Go Reference](https://pkg.go.dev/badge/github.com/tonteeton/golib.svg)](https://pkg.go.dev/github.com/tonteeton/golib)
 [![Build and run tests](https://github.com/tonteeton/golib/actions/workflows/test.yml/badge.svg)](https://github.com/tonteeton/golib/actions/workflows/test.yml)
+[![Go Report Card](https://goreportcard.com/badge/github.com/tonteeton/golib)](https://goreportcard.com/report/github.com/tonteeton/golib)
 
 A collection of reusable Go packages designed for [TonTeeTon](https://github.com/tonteeton/tonteeton) enclave operations, encryption, configuration, and key management.
 
