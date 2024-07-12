@@ -75,3 +75,32 @@ func (response EnclaveResponse) save(responsePath string) error {
 	}
 	return nil
 }
+
+// PackResponseToCell packs the response into a cell for sending to the TON network.
+func PackResponseToCell(cfg Config, payload *cell.Cell, opCode uint32) (*cell.Cell, error) {
+	signature, err := esign.GetSignatureKey(cfg.SignatureKeys)
+	if err != nil {
+		return nil, err
+	}
+	response, err := newEnclaveResponse(payload, signature.GetPrivateKey())
+	if err != nil {
+		return nil, err
+	}
+
+	signatureBytes, err := base64.StdEncoding.DecodeString(response.Signature)
+	if err != nil {
+		return nil, errors.New("failed to decode signature")
+	}
+
+	signatureCell := cell.BeginCell().
+		MustStoreSlice(signatureBytes, uint(8*len(signatureBytes))).
+		EndCell()
+
+	messageCell := cell.BeginCell().
+		MustStoreUInt(uint64(opCode), 32).
+		MustStoreRef(signatureCell).
+		MustStoreBuilder(payload.ToBuilder()).
+		EndCell()
+
+	return messageCell, nil
+}

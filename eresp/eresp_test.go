@@ -4,6 +4,7 @@ import (
 	"encoding/base64"
 	"encoding/json"
 	"github.com/tonteeton/golib/econf"
+	"github.com/tonteeton/golib/esign"
 	"github.com/xssnick/tonutils-go/tvm/cell"
 	"os"
 	"testing"
@@ -115,4 +116,60 @@ func TestSaveResponse(t *testing.T) {
 		}
 
 	})
+}
+
+func TestPackResponseToCell(t *testing.T) {
+	t.Run("Response packed to cell as expected", func(t *testing.T) {
+		setupTest(t)
+
+		responseCfg := Config{
+			Response: econf.ResponseConfig{
+				ResponsePath: "response1.json",
+			},
+			SignatureKeys: econf.KeysConfig{
+				PublicKeyPath:  "key.pub",
+				PrivateKeyPath: "key.priv.enc",
+				SealedDatePath: "created.enc",
+				Version:        "test",
+			},
+		}
+
+		secretKey, err := base64.StdEncoding.DecodeString(
+			"yMJNiUZf3kMeEkQ+0r57+Ou8DEfOKmNC/BCN9c2TfPc5PICixeaQ8vlV/79OARLthRMyTOXEVDU16/1JY3BP1Q==",
+		)
+		if err != nil {
+			t.Fatalf("Error decoding signature key: %v", err)
+		}
+		err = esign.SaveSignatureKey(
+			responseCfg.SignatureKeys,
+			secretKey,
+		)
+		if err != nil {
+			t.Fatalf("Error saving signature: %v", err)
+		}
+
+		boc64 := "te6cckEBAQEAMgAAYAAAAABmalYRAAAAAHJxYCMAAAAAAAAC9AAAAAnwlP1UAAAAAAAAA2QAAAAAAAArd2S53VY="
+		data, err := base64.StdEncoding.DecodeString(boc64)
+		if err != nil {
+			t.Fatalf("Error decoding base64: %v", err)
+		}
+
+		payloadCell, err := cell.FromBOC(data)
+		if err != nil {
+			t.Fatalf("Error building cell from BOC: %v", err)
+		}
+
+		resultCell, err := PackResponseToCell(responseCfg, payloadCell, 0x9f89304e)
+		if err != nil {
+			t.Errorf("Error packing Enclave response to cell: %v", err)
+		}
+
+		expected := "te6cckEBAgEAeQABaJ+JME4AAAAAZmpWEQAAAABycWAjAAAAAAAAAvQAAAAJ8JT9VAAAAAAAAANkAAAAAAAAK3cBAIDQxyqnFZq6P51cgXzD37pklWI2NSRjpwoaKWQY3SkrV59otUulbVoU7JMhyM3LYU3u4k/prBCqNkK6G2MPSysIfrV1mg=="
+
+		got := base64.StdEncoding.EncodeToString(resultCell.ToBOC())
+		if got != expected {
+			t.Errorf("Unexpected cell. Got: %s, Expected: %s", got, expected)
+		}
+	})
+
 }
